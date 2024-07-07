@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            overflow: hidden;
+        }
+
+        /* Container styles */
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Heading styles */
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Form styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Message styles */
+        .message {
+            margin-top: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .error {
+            color: #ff0000;
+        }
+
+        /* Footer styles */
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .instagram {
+            margin-top: 5px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .instagram:hover {
+            text-decoration: underline;
+        }
+
+        /* Logo styles */
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+
+        body.dark-mode .container {
+            background-color: #444;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode h1,
+        body.dark-mode label {
+            color: #f4f4f4;
+        }
+
+        body.dark-mode input[type="text"] {
+            background-color: #666;
+            color: #fff;
+            border: 1px solid #888;
+        }
+
+        body.dark-mode button {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode button:hover {
+            background-color: #007bff;
+        }
+
+        body.dark-mode .error {
+            color: #ff6b6b;
+        }
+
+        body.dark-mode footer {
+            color: #aaa;
+        }
+
+        body.dark-mode .instagram {
+            color: #0096ff;
+        }
+
+        /* Purple mode styles */
+        body.purple-mode {
+            background-color: #6a0dad;
+            color: #f4f4f4;
+        }
+
+        body.purple-mode .container {
+            background-color: #7b2cbf;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        body.purple-mode h1,
+        body.purple-mode label {
+            color: #f4f4f4;
+        }
+
+        body.purple-mode input[type="text"] {
+            background-color: #8a4cdd;
+            color: #fff;
+            border: 1px solid #9b7ef2;
+        }
+
+        body.purple-mode button {
+            background-color: #3f0071;
+        }
+
+        body.purple-mode button:hover {
+            background-color: #5a00a1;
+        }
+
+        body.purple-mode .error {
+            color: #ff6b6b;
+        }
+
+        body.purple-mode footer {
+            color: #ddd;
+        }
+
+        body.purple-mode .instagram {
+            color: #bb86fc;
+        }
+
+        /* Toggle button styles */
+        .toggle-buttons {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .toggle-buttons button {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s;
+        }
+
+        .toggle-buttons button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        function showLoadingMessage() {
+            const form = document.querySelector('form');
+            const message = document.createElement('div');
+            message.className = 'message';
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            message.appendChild(spinner);
+            message.appendChild(document.createTextNode(' Downloading... Please wait.'));
+            form.appendChild(message);
+        }
+
+        function toggleMode(mode) {
+            document.body.classList.remove('dark-mode', 'purple-mode');
+            if (mode !== 'default') {
+                document.body.classList.add(mode);
+            }
+        }
+
+        window.onload = function() {
+            document.querySelector('form').onsubmit = showLoadingMessage;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo" class="logo">
+        <h1>YouTube Video Downloader</h1>
+        <form method="POST">
+            <label for="url">YouTube Video URL:</label>
+            <input type="text" id="url" name="url" required>
+            <button type="submit">Download</button>
+        </form>
+        {% if success %}
+            <div class="message">
+                <h2>Download completed successfully!</h2>
+                <p>Title: {{ title }}</p>
+                <a href="{{ url_for('download_file', filename=filename) }}">Download {{ filename }}</a>
+            </div>
+        {% elif error %}
+            <div class="message error">
+                <h2>Error: {{ error }}</h2>
+            </div>
+        {% endif %}
+    </div>
+    <footer>
+        <a class="instagram" href="https://www.instagram.com/rohan_30.01/" target="_blank">made by Amrish</a>
+    </footer>
+    <div class="toggle-buttons">
+        <button onclick="toggleMode('default')">Default Mode</button>
+        <button onclick="toggleMode('dark-mode')">Dark Mode</button>
+        <button onclick="toggleMode('purple-mode')">Purple Mode</button>
+    </div>
+</body>
+</html>
